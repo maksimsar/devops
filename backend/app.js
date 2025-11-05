@@ -8,6 +8,9 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
+var aggregateRouter = require('./routes/aggregate');
+app.use('/aggregate', aggregateRouter);
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
