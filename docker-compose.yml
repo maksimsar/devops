@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: devops-backend
+    environment:
+      - PORT=3000
+      - PROFILE_SERVICE_URL=http://profile-service:3001
+      - STATS_SERVICE_URL=http://stats-service:3002
+    depends_on:
+      profile-service:
+        condition: service_started
+      stats-service:
+        condition: service_started
+    ports:
+      - "3000:3000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: devops-frontend
+    depends_on:
+      backend:
+        condition: service_started
+    ports:
+      - "4173:4173"
+
+  profile-service:
+    build:
+      context: ./backend/profile-service
+      dockerfile: Dockerfile
+    container_name: profile-service
+    ports:
+      - "3001:3001"
+
+  stats-service:
+    build:
+      context: ./backend/stats-service
+      dockerfile: Dockerfile
+    container_name: stats-service
+    ports:
+      - "3002:3002"
+
+networks:
+  default:
+    name: devops-net
